@@ -1,0 +1,71 @@
+[
+  {
+    "id": "CP-DD-LOGIN-001",
+    "tipo": "positivo",
+    "descripcion": "Cliente con credenciales válidas",
+    "email": "ana@tiendaqa.com",
+    "password": "Cliente123!",
+    "esperado": "catalogo"
+  },
+  {
+    "id": "CP-DD-LOGIN-002",
+    "tipo": "positivo",
+    "descripcion": "Correo en mayúsculas se acepta",
+    "email": "LUIS@TIENDAQA.COM",
+    "password": "Cliente123!",
+    "esperado": "catalogo"
+  },
+  {
+    "id": "CP-DD-LOGIN-003",
+    "tipo": "positivo",
+    "descripcion": "Administrador entra al panel",
+    "email": "admin@tiendaqa.com",
+    "password": "Admin123!",
+    "esperado": "admin"
+  },
+  {
+    "id": "CP-DD-LOGIN-004",
+    "tipo": "negativo",
+    "descripcion": "Contraseña incorrecta",
+    "email": "ana@tiendaqa.com",
+    "password": "Equivocada1!",
+    "esperado": "error",
+    "mensaje": "Credenciales inválidas"
+  },
+  {
+    "id": "CP-DD-LOGIN-006",
+    "tipo": "negativo",
+    "descripcion": "Usuario bloqueado",
+    "email": "bloqueado@tiendaqa.com",
+    "password": "Cliente123!",
+    "esperado": "error",
+    "mensaje": "Usuario bloqueado"
+  },
+  {
+    "id": "CP-DD-LOGIN-007",
+    "tipo": "negativo",
+    "descripcion": "Correo sin formato válido",
+    "email": "ana.tiendaqa.com",
+    "password": "Cliente123!",
+    "esperado": "validacion",
+    "mensaje": "Ingresa un correo válido"
+  },
+  {
+    "id": "CP-DD-LOGIN-008",
+    "tipo": "negativo",
+    "descripcion": "Contraseña vacía",
+    "email": "ana@tiendaqa.com",
+    "password": "",
+    "esperado": "validacion",
+    "mensaje": "La contraseña es obligatoria"
+  },
+  {
+    "id": "CP-DD-LOGIN-009",
+    "tipo": "limite",
+    "descripcion": "Intento de inyección SQL en el correo",
+    "email": "' OR 1=1 --@x.com",
+    "password": "x",
+    "esperado": "validacion",
+    "mensaje": "Ingresa un correo válido"
+  }
+]

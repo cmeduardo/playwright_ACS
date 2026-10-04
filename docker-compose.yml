@@ -1,0 +1,49 @@
+# Ejecución de las pruebas en contenedor (ambiente idéntico para todo el equipo).
+#   docker compose run --rm pruebas                 -> suite completa con BUGS=on (defectos activos)
+#   BUGS=off docker compose run --rm pruebas        -> regresión con los defectos corregidos
+#   docker compose run --rm pruebas npx playwright test --grep @smoke
+#   docker compose up app                           -> solo la aplicación en http://localhost:3100
+services:
+  pruebas:
+    build: .
+    image: tiendaqa-pruebas:1.0
+    environment:
+      BUGS: ${BUGS:-on}
+      CI: "1"
+    ipc: host # recomendado por Playwright para evitar fallos de Chromium por memoria compartida
+    init: true
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}" # export HOST_UID=$(id -u) HOST_GID=$(id -g)
+    volumes:
+      # Los reportes se escriben en el equipo anfitrión, no se pierden al borrar el contenedor.
+      - ./reports:/app/reports
+      - ./playwright-report:/app/playwright-report
+      - ./allure-results:/app/allure-results
+      - ./test-results:/app/test-results
+      # Las líneas base visuales salen del equipo, no de la imagen: así `visual-actualizar` y `pruebas`
+      # siempre comparan contra los mismos archivos sin reconstruir la imagen.
+      - ./tests/visual:/app/tests/visual
+
+  # Genera/actualiza las líneas base visuales de Docker (con los defectos corregidos).
+  #   docker compose run --rm visual-actualizar
+  visual-actualizar:
+    build: .
+    image: tiendaqa-pruebas:1.0
+    command: ["npx", "playwright", "test", "--grep", "@visual", "--project=chromium", "--update-snapshots"]
+    environment:
+      BUGS: "off"
+      CI: "1"
+    ipc: host
+    init: true
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    volumes:
+      - ./tests/visual:/app/tests/visual
+
+  app:
+    build: .
+    image: tiendaqa-pruebas:1.0
+    command: ["node", "app/server.js"]
+    environment:
+      BUGS: ${BUGS:-on}
+      PORT: "3100"
+    ports:
+      - "3100:3100"

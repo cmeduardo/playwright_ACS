@@ -1,0 +1,66 @@
+[
+  {
+    "id": "CP-DD-CHK-001",
+    "tipo": "negativo",
+    "descripcion": "Nombre vacío",
+    "campo": "nombre",
+    "valor": "",
+    "mensaje": "El nombre es obligatorio"
+  },
+  {
+    "id": "CP-DD-CHK-002",
+    "tipo": "negativo",
+    "descripcion": "Correo inválido",
+    "campo": "email",
+    "valor": "ana@correo",
+    "mensaje": "Ingresa un correo válido"
+  },
+  {
+    "id": "CP-DD-CHK-003",
+    "tipo": "limite",
+    "descripcion": "Dirección de 4 caracteres (límite inferior -1)",
+    "campo": "direccion",
+    "valor": "abcd",
+    "mensaje": "La dirección debe tener al menos 5 caracteres"
+  },
+  {
+    "id": "CP-DD-CHK-004",
+    "tipo": "limite",
+    "descripcion": "Teléfono de 7 dígitos (límite -1)",
+    "campo": "telefono",
+    "valor": "5551234",
+    "mensaje": "El teléfono debe tener 8 dígitos"
+  },
+  {
+    "id": "CP-DD-CHK-007",
+    "tipo": "limite",
+    "descripcion": "Tarjeta de 15 dígitos",
+    "campo": "tarjeta",
+    "valor": "411111111111111",
+    "mensaje": "La tarjeta debe tener 16 dígitos"
+  },
+  {
+    "id": "CP-DD-CHK-009",
+    "tipo": "negativo",
+    "descripcion": "Vencimiento con formato incorrecto",
+    "campo": "vencimiento",
+    "valor": "1235",
+    "mensaje": "Usa el formato MM/AA"
+  },
+  {
+    "id": "CP-DD-CHK-011",
+    "tipo": "negativo",
+    "descripcion": "Tarjeta vencida",
+    "campo": "vencimiento",
+    "valor": "01/20",
+    "mensaje": "La tarjeta está vencida"
+  },
+  {
+    "id": "CP-DD-CHK-012",
+    "tipo": "limite",
+    "descripcion": "CVV de 2 dígitos",
+    "campo": "cvv",
+    "valor": "12",
+    "mensaje": "El CVV debe tener 3 dígitos"
+  }
+]

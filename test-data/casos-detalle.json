@@ -1,0 +1,285 @@
+{
+ "CP-E2E-001": {
+  "pre": "BD semilla cargada; cliente nuevo registrado por API (fixture clienteNuevo)",
+  "datos": "Producto: Mouse Inalámbrico × 2 (Q240.00); cupón BIENVENIDO10; envío y pago válidos (tarjeta 4111111111111111, 12/35, CVV 123)",
+  "pasos": [
+   "Iniciar sesión por la interfaz con el cliente nuevo",
+   "Buscar «mouse» y agregarlo al carrito",
+   "En el carrito subir la cantidad a 2 y aplicar BIENVENIDO10",
+   "Proceder al pago, llenar el formulario y pagar",
+   "Abrir «Mis pedidos»"
+  ],
+  "esperado": "Descuento -Q24.00 y total Q216.00; se muestra «¡Pedido confirmado!» con número y total; el carrito queda en 0; el pedido figura en el historial como «Pagado»."
+ },
+ "CP-E2E-002": {
+  "pre": "BD semilla cargada; cliente nuevo registrado por API (fixture clienteNuevo)",
+  "datos": "ana@tiendaqa.com con clave errónea; bloqueado@tiendaqa.com; cliente nuevo; admin@tiendaqa.com / Admin123!",
+  "pasos": [
+   "Contraseña incorrecta",
+   "Formulario vacío",
+   "Usuario bloqueado",
+   "Cliente válido entra al catálogo",
+   "Cliente abre #/admin",
+   "Cerrar sesión",
+   "Abrir #/pedidos sin sesión",
+   "Iniciar sesión como administrador"
+  ],
+  "esperado": "«Credenciales inválidas»; validaciones por campo; «Usuario bloqueado»; catálogo con el nombre del usuario; «Acceso denegado» al cliente; vuelta al login sin contador de carrito; aviso «Inicia sesión para continuar»; panel de administración para el admin."
+ },
+ "CP-E2E-003": {
+  "pre": "BD semilla cargada; sin sesión (visitante)",
+  "datos": "Búsquedas «mouse», «CAFE», «unicornio»; categorías Papelería y Tecnología; precio máximo Q500; orden ascendente",
+  "pasos": [
+   "Abrir el catálogo",
+   "Buscar «mouse»",
+   "Buscar «CAFE» (sin tildes ni mayúsculas)",
+   "Buscar «unicornio» (sin resultados)",
+   "Filtrar por categoría Papelería",
+   "Combinar Tecnología + precio máximo 500 + orden ascendente"
+  ],
+  "esperado": "Teclado Mecánico a Q450.00; 1 resultado para «mouse»; «CAFE» encuentra «Café de Antigua 500g»; estado vacío y «0 productos»; solo productos de Papelería; 3 productos de Tecnología ordenados [120, 380, 450] sin el Monitor."
+ },
+ "CP-E2E-004": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada (fixture paginaCliente)",
+  "datos": "Cuaderno Universitario (Q25.00), Mouse Inalámbrico (Q120.00); cupones NOEXISTE, EXPIRADO5, FIJO50, BIENVENIDO10",
+  "pasos": [
+   "Agregar dos productos desde el catálogo",
+   "Cambiar la cantidad del cuaderno a 4",
+   "Eliminar el mouse",
+   "Cupones NOEXISTE y EXPIRADO5",
+   "FIJO50 con Q100 (bajo el mínimo)",
+   "Subir a 10 cuadernos (Q250) y aplicar FIJO50",
+   "Aplicar BIENVENIDO10 (reemplaza al anterior)",
+   "Eliminar el último producto"
+  ],
+  "esperado": "Subtotal Q220.00 y luego Q100.00; los cupones inválidos se rechazan sin descontar; FIJO50 exige Q200 de mínimo y luego descuenta -Q50.00 (total Q200.00); BIENVENIDO10 descuenta -Q25.00; el carrito vacío muestra «Tu carrito está vacío»."
+ },
+ "CP-E2E-005": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada y 2 × Cuaderno Universitario en el carrito (fixture carritoUI)",
+  "datos": "Formulario vacío; teléfono de 7 dígitos y tarjeta de 15; tarjeta 4000000000000002 (declinada); datos válidos",
+  "pasos": [
+   "Pagar con el formulario vacío",
+   "Teléfono de 7 dígitos y tarjeta de 15 dígitos",
+   "Pagar con tarjeta declinada",
+   "Pagar con datos válidos"
+  ],
+  "esperado": "Un mensaje por cada campo obligatorio; solo se señalan teléfono y tarjeta; «Pago rechazado» sin crear pedido y con el carrito intacto; pedido confirmado por Q50.00 y carrito en 0."
+ },
+ "CP-E2E-006": {
+  "pre": "BD semilla cargada; sesión de administrador (storageState)",
+  "datos": "Producto único: precio Q99.50 → Q25.75, stock 10 → 42, categoría Pruebas QA; precio -5",
+  "pasos": [
+   "Crear un producto",
+   "Editar precio y stock",
+   "Validar nombre vacío y precio negativo",
+   "Cancelar la eliminación",
+   "Confirmar la eliminación"
+  ],
+  "esperado": "El producto aparece con Q99.50, luego con Q25.75 y stock 42; «El nombre es obligatorio» y «El precio debe ser un número mayor o igual a 0»; al cancelar sigue en la tabla; al confirmar desaparece."
+ },
+ "CP-E2E-007": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada (fixture paginaCliente)",
+  "datos": "Botella Térmica 1L × 2 (Q300.00); segundo cliente registrado por API",
+  "pasos": [
+   "Abrir «Mis pedidos» sin compras",
+   "Comprar por API y recargar el historial",
+   "Consultar el pedido con otro cliente y con el administrador"
+  ],
+  "esperado": "«Aún no tienes pedidos»; el historial muestra 1 pedido con «Botella Térmica 1L × 2», Q300.00 y «Pagado»; el otro cliente no ve pedidos y recibe 404 al consultarlo; el administrador recibe 200."
+ },
+ "CP-DD-001": {
+  "pre": "BD semilla cargada; sin sesión",
+  "datos": "8 filas de test-data/login.json (válidos, inválidos, bloqueado, formato y límite)",
+  "pasos": [
+   "Para cada fila: limpiar la sesión y abrir el login",
+   "Escribir correo y contraseña de la fila",
+   "Comparar con el resultado de la fila"
+  ],
+  "esperado": "Cada fila produce el resultado indicado en el dataset (catálogo, panel de administración, error o validación); el caso reporta todas las filas que fallen."
+ },
+ "CP-DD-002": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada y 2 × Cuaderno Universitario en el carrito (fixture carritoUI)",
+  "datos": "8 filas de test-data/checkout-negativos.json (un campo inválido por fila) y 3 de test-data/checkout-positivos.csv",
+  "pasos": [
+   "Para cada fila negativa: formulario válido con un campo alterado, pagar",
+   "Verificar el mensaje bajo ese campo",
+   "Para cada fila positiva: llenar con los datos del CSV y pagar",
+   "Verificar el pedido confirmado"
+  ],
+  "esperado": "Cada entrada inválida o límite muestra su mensaje sin crear pedido; cada compra válida termina en «¡Pedido confirmado!»."
+ },
+ "CP-DD-003": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada (fixture paginaCliente)",
+  "datos": "6 filas de test-data/cupones.csv (producto, cantidad, cupón, subtotal, descuento y total esperados)",
+  "pasos": [
+   "Para cada fila: vaciar el carrito y agregar el producto por API",
+   "Abrir el carrito y aplicar el cupón",
+   "Comparar subtotal, descuento y total"
+  ],
+  "esperado": "Los valores coinciden con la fila. [Con BUGS=on fallan las filas de Q500 o más: BUG-001]"
+ },
+ "CP-API-001": {
+  "pre": "BD semilla cargada; servidor TiendaQA activo; cliente nuevo registrado por API (token propio)",
+  "datos": "ana@tiendaqa.com / Cliente123!; bloqueado@tiendaqa.com; correos nuevos y duplicados",
+  "pasos": [
+   "Login válido y validación de esquema",
+   "Credenciales inválidas, bloqueado y vacío",
+   "Registro, duplicado y datos inválidos",
+   "GET /api/auth/me sin y con token",
+   "Logout y reutilización del token"
+  ],
+  "esperado": "200 con { token (48 hex), user } sin password_hash; 401, 403 y 400; 201, 409 y 400; /me 401 sin token y 200 con token; tras logout el token responde 401."
+ },
+ "CP-API-002": {
+  "pre": "BD semilla cargada; servidor TiendaQA activo; cliente nuevo registrado por API (token propio)",
+  "datos": "Producto 2 y 999999; búsqueda AUDIFONOS; categoría Tecnología, precio máximo 500, orden descendente",
+  "pasos": [
+   "GET /api/products y validar esquema",
+   "GET por id y 404",
+   "Búsqueda sin tildes ni mayúsculas",
+   "Filtros combinados"
+  ],
+  "esperado": "200 application/json con ≥ 12 productos y el esquema correcto; 200 «Teclado Mecánico» y 404; la búsqueda incluye «Audífonos Bluetooth»; solo Tecnología ≤ Q500 de mayor a menor precio."
+ },
+ "CP-API-003": {
+  "pre": "BD semilla; token de administrador, de cliente y sin token",
+  "datos": "Producto nuevo Q19.99, stock 7; precio -1, stock 1.5, nombre vacío",
+  "pasos": [
+   "Crear, actualizar, consultar y eliminar como administrador",
+   "Crear sin token, crear y eliminar como cliente",
+   "Crear con datos inválidos"
+  ],
+  "esperado": "201, 200 (precio 29.99), 200, 204 y finalmente 404; 401 sin token y 403 como cliente; 400 para cada dato inválido."
+ },
+ "CP-API-004": {
+  "pre": "BD semilla cargada; servidor TiendaQA activo; cliente nuevo registrado por API (token propio)",
+  "datos": "Mouse (id 3, Q120); Monitor × 41 (stock 40); cupones FIJO50, NOEXISTE, EXPIRADO5 y bienvenido10",
+  "pasos": [
+   "Carrito sin token",
+   "Carrito vacío de un cliente nuevo",
+   "Agregar, acumular, cambiar cantidad y quitar",
+   "Producto inexistente y stock insuficiente",
+   "Reglas de cada cupón"
+  ],
+  "esperado": "401 sin token; carrito vacío con el esquema correcto; subtotal 240, cantidad 3, total 600 y carrito vacío; 404 y 409; FIJO50 400, NOEXISTE 404, EXPIRADO5 404 y bienvenido10 con descuento 12 y total 108."
+ },
+ "CP-API-005": {
+  "pre": "BD semilla cargada; servidor TiendaQA activo; cliente nuevo registrado por API (token propio)",
+  "datos": "Cuaderno y Botella Térmica; tarjeta 4000000000000002; teléfono «123» y CVV «1»; segundo cliente y administrador",
+  "pasos": [
+   "Pedido con carrito vacío",
+   "Pedido con datos inválidos",
+   "Tarjeta declinada",
+   "Pedido válido: esquema, carrito y stock",
+   "Pedido ajeno y vista del administrador"
+  ],
+  "esperado": "400; 400 con detalle de los campos telefono y cvv; 402 sin crear pedido; 201 con subtotal 300, estado Pagado, carrito vacío y stock -2; el cliente ajeno recibe 404 y el administrador 200 y lo ve en ?all=1."
+ },
+ "CP-INT-001": {
+  "pre": "BD semilla cargada; sesión de administrador (storageState)",
+  "datos": "Producto único Q88.80, stock 3, categoría Pruebas QA",
+  "pasos": [
+   "Crear el producto por API",
+   "Buscarlo en el catálogo (UI)",
+   "Eliminarlo por API",
+   "Buscarlo de nuevo"
+  ],
+  "esperado": "La interfaz lo muestra con Q88.80 y «Disponibles: 3»; tras eliminarlo, la búsqueda muestra el estado vacío."
+ },
+ "CP-RED-001": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada (fixture paginaCliente)",
+  "datos": "Respuestas simuladas con page.route: 500, respuesta retenida, [], producto simulado, 409 y 401",
+  "pasos": [
+   "Catálogo con API caída y reintento",
+   "Respuesta lenta con indicador de carga",
+   "Catálogo vacío y datos simulados",
+   "Petición enviada al buscar",
+   "Error 409 al agregar",
+   "Sesión expirada (401) en el carrito"
+  ],
+  "esperado": "«No pudimos cargar el catálogo» y recuperación al reintentar; «Cargando productos…» hasta liberar la respuesta; estado vacío y producto simulado «Agotado»; la petición incluye q=mouse; aviso «Stock insuficiente» sin cambiar el contador; redirección al login con «Tu sesión expiró»."
+ },
+ "CP-VIS-001": {
+  "pre": "BD semilla cargada; cliente nuevo registrado por API (fixture clienteNuevo); línea base generada con BUGS=off",
+  "datos": "Líneas base: login.png, catalogo.png, checkout.png y boton-pagar.png; productos congelados en test-data/productos-visual.json",
+  "pasos": [
+   "Comparar la pantalla de login",
+   "Comparar el catálogo con datos congelados",
+   "Comparar el formulario de checkout y el botón de pago"
+  ],
+  "esperado": "Sin diferencias respecto a la línea base. [Con BUGS=on el botón de pago difiere: BUG-005]"
+ },
+ "CP-A11Y-001": {
+  "pre": "BD semilla cargada; cliente con carrito y administrador",
+  "datos": "axe-core con las etiquetas wcag2a, wcag2aa, wcag21a y wcag21aa",
+  "pasos": [
+   "Analizar login y catálogo (visitante)",
+   "Analizar carrito y checkout (cliente)",
+   "Analizar el panel de administración (administrador)",
+   "Reunir y comparar las violaciones"
+  ],
+  "esperado": "0 violaciones WCAG A/AA en las 5 pantallas. [Con BUGS=on el checkout incumple la regla «label» y el contraste: BUG-004]"
+ },
+ "CP-MOV-001": {
+  "pre": "BD semilla cargada; viewport móvil (Pixel 7 e iPhone 14); sin sesión",
+  "datos": "—",
+  "pasos": [
+   "Verificar el menú colapsado y abrirlo",
+   "Cerrarlo con el mismo botón",
+   "Navegar desde el menú",
+   "Medir el desbordamiento horizontal"
+  ],
+  "esperado": "El menú pasa de oculto a visible (aria-expanded) y vuelve a ocultarse; al navegar se cierra; no hay desplazamiento horizontal en login ni catálogo."
+ },
+ "CP-MOV-002": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada y 2 × Cuaderno Universitario en el carrito (fixture carritoUI); viewport móvil",
+  "datos": "Envío y pago válidos",
+  "pasos": [
+   "Abrir el carrito y proceder al pago",
+   "Llenar el formulario y pagar",
+   "Abrir «Mis pedidos» desde el menú móvil"
+  ],
+  "esperado": "Se muestra «¡Pedido confirmado!» y el pedido aparece en el historial; sin desbordamiento horizontal en el checkout."
+ },
+ "CP-DEF-001": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada (fixture paginaCliente)",
+  "datos": "2 × Audífonos (Q760) + BIENVENIDO10; Q475 y Q500 con BIENVENIDO10; Monitor (Q1500) + VERANO20",
+  "pasos": [
+   "Interfaz: descuento sobre Q760",
+   "API: Q475 (bajo el umbral)",
+   "API: Q500 (en el umbral)",
+   "API: Monitor con VERANO20"
+  ],
+  "esperado": "-Q76.00 y total Q684.00; descuento 47.5; descuento 50; descuento 300 y total 1200. [Falla con BUGS=on: duplica el porcentaje desde Q500]"
+ },
+ "CP-DEF-002": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada (fixture paginaCliente)",
+  "datos": "Cuaderno Universitario; cantidades -3, 0, -5 y 100",
+  "pasos": [
+   "Interfaz: cantidad -3",
+   "Interfaz: cantidad 0",
+   "API: -5, 0 y 100",
+   "Verificar el carrito"
+  ],
+  "esperado": "La interfaz muestra «La cantidad debe ser un entero entre 1 y 99» y el total sigue en Q25.00; la API responde 400 y el carrito queda vacío. [Falla con BUGS=on: acepta cualquier entero]"
+ },
+ "CP-DEF-003": {
+  "pre": "BD semilla cargada; sin sesión",
+  "datos": "Búsquedas «café», «Ñandú» y «D'Lujo»; en la API también «tecnología»",
+  "pasos": [
+   "Interfaz: buscar cada término",
+   "Verificar que aparece el producto y no el error",
+   "API: las mismas consultas"
+  ],
+  "esperado": "Aparecen Café de Antigua 500g, Mochila Ñandú y Pantalón D'Lujo sin error; la API responde 200 en todas. [Falla con BUGS=on: error 500]"
+ },
+ "CP-DEF-004": {
+  "pre": "BD semilla cargada; cliente nuevo con sesión iniciada y 2 × Cuaderno Universitario en el carrito (fixture carritoUI)",
+  "datos": "Etiquetas: Nombre completo, Correo electrónico, Dirección de entrega, Teléfono (8 dígitos), Número de tarjeta, Vencimiento (MM/AA) y CVV",
+  "pasos": [
+   "Abrir el checkout",
+   "Localizar cada campo por su etiqueta accesible (getByLabel)"
+  ],
+  "esperado": "Los 7 campos se localizan por su etiqueta. [Falla con BUGS=on: «Dirección de entrega» no tiene <label>]"
+ }
+}

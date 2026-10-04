@@ -1,0 +1,399 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API de TiendaQA",
+    "version": "1.0.0",
+    "description": "API REST de la aplicación bajo prueba (SUT). Autenticación con token Bearer."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3100"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Iniciar sesión",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "{ token, user }"
+          },
+          "401": {
+            "description": "Credenciales inválidas"
+          },
+          "403": {
+            "description": "Usuario bloqueado"
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Registrar cliente",
+        "responses": {
+          "201": {
+            "description": "{ token, user }"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "409": {
+            "description": "Correo duplicado"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Cerrar sesión",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Sesión cerrada"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Usuario actual",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario"
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Listar/buscar productos (q, category, minPrice, maxPrice, sort)",
+        "responses": {
+          "200": {
+            "description": "Arreglo de productos"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Crear producto (admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Producto creado"
+          },
+          "400": {
+            "description": "Validación"
+          },
+          "403": {
+            "description": "No es admin"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Obtener producto",
+        "responses": {
+          "200": {
+            "description": "Producto"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Actualizar producto (admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Producto"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Eliminar producto (admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Eliminado"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      }
+    },
+    "/api/cart": {
+      "get": {
+        "tags": [
+          "cart"
+        ],
+        "summary": "Ver carrito con totales",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{ items, coupon, subtotal, discount, total }"
+          }
+        }
+      }
+    },
+    "/api/cart/items": {
+      "post": {
+        "tags": [
+          "cart"
+        ],
+        "summary": "Agregar producto { productId, quantity }",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Carrito"
+          },
+          "400": {
+            "description": "Cantidad inválida"
+          },
+          "409": {
+            "description": "Stock insuficiente"
+          }
+        }
+      }
+    },
+    "/api/cart/items/{productId}": {
+      "patch": {
+        "tags": [
+          "cart"
+        ],
+        "summary": "Cambiar cantidad { quantity }",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrito"
+          },
+          "400": {
+            "description": "Cantidad inválida"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cart"
+        ],
+        "summary": "Eliminar del carrito",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrito"
+          }
+        }
+      }
+    },
+    "/api/cart/coupon": {
+      "post": {
+        "tags": [
+          "cart"
+        ],
+        "summary": "Aplicar cupón { code }",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrito"
+          },
+          "400": {
+            "description": "Monto mínimo"
+          },
+          "404": {
+            "description": "Cupón inválido"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "cart"
+        ],
+        "summary": "Quitar cupón",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrito"
+          }
+        }
+      }
+    },
+    "/api/orders": {
+      "post": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Crear pedido (checkout) { shipping, payment }",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Pedido"
+          },
+          "400": {
+            "description": "Validación"
+          },
+          "402": {
+            "description": "Pago rechazado"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Historial de pedidos (?all=1 solo admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Arreglo de pedidos"
+          }
+        }
+      }
+    },
+    "/api/orders/{id}": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Detalle de pedido",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": [
+          "sistema"
+        ],
+        "summary": "Estado y modo de bugs",
+        "responses": {
+          "200": {
+            "description": "{ status, bugs }"
+          }
+        }
+      }
+    }
+  }
+}

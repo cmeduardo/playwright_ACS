@@ -1,0 +1,7 @@
+id,cupon,producto,cantidad,subtotal,descuento,total,descripcion,defecto_asociado
+CP-DD-CUP-001,BIENVENIDO10,Cuaderno Universitario,2,50.00,5.00,45.00,10% sobre compra pequeña,
+CP-DD-CUP-002,VERANO20,Mouse Inalámbrico,1,120.00,24.00,96.00,20% sobre compra mediana,
+CP-DD-CUP-003,FIJO50,Botella Térmica 1L,2,300.00,50.00,250.00,Descuento fijo con monto mínimo cumplido,
+CP-DD-CUP-004,BIENVENIDO10,Teclado Mecánico,1,450.00,45.00,405.00,Límite inferior al umbral de Q500,
+CP-DD-CUP-005,BIENVENIDO10,Audífonos Bluetooth,2,760.00,76.00,684.00,Compra sobre Q500 (descuento correcto 10%),BUG-001
+CP-DD-CUP-006,VERANO20,Monitor 24 pulgadas,1,1500.00,300.00,1200.00,Compra grande con 20%,BUG-001

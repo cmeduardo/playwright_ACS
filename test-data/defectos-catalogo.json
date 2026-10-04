@@ -1,0 +1,71 @@
+{
+  "BUG-001": {
+    "titulo": "El cupón porcentual aplica el descuento doble en compras de Q500 o más",
+    "componente": "Carrito / Cupones (API /api/cart/coupon)",
+    "severidad": "Crítica",
+    "prioridad": "Alta",
+    "requerimiento": "RF-06",
+    "pasos": [
+      "Iniciar sesión como cliente (ana@tiendaqa.com / Cliente123!).",
+      "Agregar al carrito 2 × «Audífonos Bluetooth» (subtotal Q760.00) o 1 × «Monitor 24 pulgadas» (Q1,500.00).",
+      "Abrir el carrito (#/carrito).",
+      "Escribir el cupón BIENVENIDO10 (10 %) y pulsar «Aplicar cupón»."
+    ],
+    "esperado": "El descuento es el 10 % del subtotal: Q76.00 sobre Q760.00 (total Q684.00).",
+    "obtenido": "El descuento es el 20 %: Q152.00 sobre Q760.00 (total Q608.00). En compras menores a Q500 el cálculo es correcto."
+  },
+  "BUG-002": {
+    "titulo": "El carrito acepta cantidades negativas o cero",
+    "componente": "Carrito (API /api/cart/items)",
+    "severidad": "Crítica",
+    "prioridad": "Alta",
+    "requerimiento": "RF-05",
+    "pasos": [
+      "Iniciar sesión como cliente y agregar «Cuaderno Universitario» al carrito.",
+      "Abrir el carrito (#/carrito).",
+      "En el campo «Cantidad de Cuaderno Universitario» escribir -3 y salir del campo."
+    ],
+    "esperado": "El sistema rechaza el valor con el mensaje «La cantidad debe ser un entero entre 1 y 99» (HTTP 400) y conserva la cantidad válida.",
+    "obtenido": "El sistema acepta la cantidad -3: el subtotal y el total del carrito quedan en negativo."
+  },
+  "BUG-003": {
+    "titulo": "La búsqueda con ñ, tildes o comilla simple devuelve error 500",
+    "componente": "Catálogo (API GET /api/products?q=)",
+    "severidad": "Crítica",
+    "prioridad": "Alta",
+    "requerimiento": "RF-03",
+    "pasos": [
+      "Abrir el catálogo (#/catalogo) sin necesidad de iniciar sesión.",
+      "En «Buscar productos» escribir «café», «Ñandú» o «D'Lujo».",
+      "Pulsar «Buscar»."
+    ],
+    "esperado": "Se muestran los productos que coinciden (Café de Antigua 500g, Mochila Ñandú, Pantalón D'Lujo).",
+    "obtenido": "La API responde HTTP 500 y la pantalla muestra «No pudimos cargar el catálogo»."
+  },
+  "BUG-004": {
+    "titulo": "El campo «Dirección de entrega» del checkout no tiene etiqueta (<label>) asociada",
+    "componente": "Checkout (formulario de envío)",
+    "severidad": "Media",
+    "prioridad": "Media",
+    "requerimiento": "RNF-05",
+    "pasos": [
+      "Iniciar sesión como cliente, agregar un producto y abrir el checkout (#/checkout).",
+      "Inspeccionar el campo de dirección o ejecutar un análisis de accesibilidad (axe-core / lector de pantalla)."
+    ],
+    "esperado": "Todos los campos del formulario tienen una etiqueta accesible (WCAG 2.1 – 1.3.1, 3.3.2, 4.1.2).",
+    "obtenido": "El campo de dirección no tiene <label> ni aria-label: axe-core reporta la regla «label» (crítica) y un lector de pantalla no anuncia el campo."
+  },
+  "BUG-005": {
+    "titulo": "El botón «Pagar ahora» cambió de aspecto respecto a la línea base visual",
+    "componente": "Checkout (botón de pago)",
+    "severidad": "Baja",
+    "prioridad": "Media",
+    "requerimiento": "RNF-04",
+    "pasos": [
+      "Iniciar sesión como cliente, agregar un producto y abrir el checkout (#/checkout).",
+      "Comparar el botón «Pagar ahora» con el diseño aprobado."
+    ],
+    "esperado": "Botón negro con esquinas rectas y tipografía serif, como en la línea base aprobada.",
+    "obtenido": "El botón es de un gris claro (#a0a0a0), con forma de píldora (esquinas totalmente redondeadas) y las letras más separadas."
+  }
+}

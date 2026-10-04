@@ -1,0 +1,165 @@
+name: Pruebas Playwright · TiendaQA
+
+# Regresión automática: la suite completa se ejecuta por navegador/proyecto con los defectos corregidos
+# (BUGS=off). Un trabajo aparte ejecuta BUGS=on y verifica que las pruebas SÍ detectan los defectos.
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      bugs:
+        description: 'Modo de la aplicación para la regresión: off = defectos corregidos, on = defectos activos'
+        type: choice
+        options: [off, on]
+        default: 'off'
+
+concurrency:
+  group: playwright-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CI: 'true'
+  BUGS: ${{ inputs.bugs || 'off' }}
+  # Las líneas base visuales del repositorio para este ambiente (imagen oficial de Playwright) llevan el sufijo "docker".
+  ENTORNO_VISUAL: docker
+
+jobs:
+  calidad:
+    name: Calidad (tipos, lint, formato y documentación)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npx prettier --check tests playwright.config.ts
+      - run: npm run docs:verificar
+
+  pruebas:
+    name: Pruebas · ${{ matrix.project }}
+    needs: calidad
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Imagen oficial con Chromium, Firefox y WebKit y sus dependencias. La versión debe coincidir con @playwright/test.
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
+    env:
+      HOME: /root # Firefox lo necesita dentro de contenedores
+    strategy:
+      fail-fast: false
+      matrix:
+        # Una ejecución por navegador/proyecto. Alternativa: fragmentar con --shard=N/M.
+        project: [api, chromium, firefox, webkit, mobile-pixel7, mobile-iphone14]
+    steps:
+      - uses: actions/checkout@v4
+      # better-sqlite3 es un módulo nativo: si no hay binario precompilado se compila.
+      - name: Herramientas de compilación
+        run: apt-get update && apt-get install -y --no-install-recommends build-essential python3
+      - run: npm ci
+      - name: Ejecutar pruebas (${{ matrix.project }}, BUGS=${{ env.BUGS }})
+        run: npx playwright test --project=${{ matrix.project }}
+      - name: Reporte HTML de Playwright
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Resultados de Allure
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.project }}
+          path: allure-results/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Bitácora, informe, defectos y dashboard
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: reportes-${{ matrix.project }}
+          path: reports/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Trazas, capturas y videos de los fallos
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: trazas-${{ matrix.project }}
+          path: test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+
+  allure:
+    name: Reporte Allure combinado
+    needs: pruebas
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-*
+          path: allure-results
+          merge-multiple: true
+      - run: npx allure generate allure-results -o allure-report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          retention-days: 14
+
+  deteccion-de-defectos:
+    name: Las pruebas detectan los defectos (BUGS=on)
+    needs: calidad
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
+    env:
+      HOME: /root
+      BUGS: 'on'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Herramientas de compilación
+        run: apt-get update && apt-get install -y --no-install-recommends build-essential python3
+      - run: npm ci
+      - name: Con defectos activos las pruebas DEBEN fallar
+        run: |
+          set +e
+          npx playwright test --project=api --project=chromium --retries=0
+          codigo=$?
+          if [ "$codigo" -eq 0 ]; then
+            echo "::error::Con BUGS=on todas las pruebas pasaron: las pruebas no están detectando los defectos."
+            exit 1
+          fi
+          echo "Correcto: con BUGS=on se detectaron defectos (código de salida $codigo)."
+      - name: Reportes de defecto generados
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: defectos-detectados
+          path: |
+            reports/defectos/
+            reports/informe-ejecucion.md
+            reports/dashboard/
+          retention-days: 14
+          if-no-files-found: ignore

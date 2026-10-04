@@ -1,0 +1,4 @@
+id,tipo,descripcion,nombre,email,direccion,telefono,tarjeta,vencimiento,cvv
+CP-DD-CHK-101,positivo,Compra con datos típicos,Ana Morales,ana@correo.com,5a avenida 10-20 zona 1,55512345,4111111111111111,12/35,123
+CP-DD-CHK-102,limite,Dirección de exactamente 5 caracteres,Luis Pérez,luis@correo.com,Zona1,40001234,4111111111111111,12/35,123
+CP-DD-CHK-103,positivo,Nombre con tildes y ñ,María Ñáñez,maria@correo.com,Calle del Árbol 5-5 zona 10,22334455,5500000000000004,06/40,999

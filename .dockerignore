@@ -1,0 +1,11 @@
+node_modules
+.git
+.auth
+test-results
+playwright-report
+allure-results
+allure-report
+reports
+db/*.db
+db/*.db-*
+*.log

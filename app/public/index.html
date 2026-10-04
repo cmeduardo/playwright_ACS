@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TiendaQA</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="#/catalogo" aria-label="TiendaQA, ir al catálogo">Tienda<em>qa</em></a>
+      <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="menu" class="menu" aria-label="Navegación principal"></nav>
+    </div>
+  </header>
+  <main id="contenido" class="container" tabindex="-1"></main>
+  <footer class="pie">
+    <div class="container">
+      <span>TiendaQA — aplicación de práctica para pruebas automatizadas</span>
+      <span>Datos ficticios · UMG · Aseguramiento de la Calidad del Software</span>
+    </div>
+  </footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title">
+    <h2 id="confirm-title">Confirmar eliminación</h2>
+    <p id="confirm-text"></p>
+    <div class="row-end">
+      <button type="button" class="btn btn-secondary" id="confirm-cancel">Cancelar</button>
+      <button type="button" class="btn btn-danger" id="confirm-ok">Confirmar eliminación</button>
+    </div>
+  </dialog>
+  <script src="/js/app.js"></script>
+</body>
+</html>

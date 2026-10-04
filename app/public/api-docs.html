@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>API de TiendaQA</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Documentación de la API</h1>
+    <p>Especificación OpenAPI en <a href="/api/docs">/api/docs</a>. Autenticación: <code>Authorization: Bearer &lt;token&gt;</code>.</p>
+    <div id="endpoints"></div>
+  </main>
+  <script>
+    fetch('/api/docs').then((r) => r.json()).then((spec) => {
+      const box = document.getElementById('endpoints');
+      for (const [path, ops] of Object.entries(spec.paths)) {
+        for (const [method, op] of Object.entries(ops)) {
+          const el = document.createElement('div');
+          el.className = 'card api-op';
+          const codes = Object.entries(op.responses).map(([c, r]) => `${c}: ${r.description}`).join(' · ');
+          el.innerHTML = `<span class="method ${method}">${method.toUpperCase()}</span> <code>${path}</code>
+            ${op.security ? '🔒' : ''}<p>${op.summary}</p><small>${codes}</small>`;
+          box.appendChild(el);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

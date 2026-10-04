@@ -1,0 +1,7 @@
+Tipografías incluidas localmente para que la aplicación funcione sin conexión a internet.
+Todas se distribuyen bajo la licencia SIL Open Font License 1.1 (https://openfontlicense.org).
+
+- Instrument Serif — Copyright 2022 The Instrument Serif Project Authors (https://github.com/Instrument/instrument-serif)
+- IBM Plex Sans e IBM Plex Mono — Copyright © 2017 IBM Corp. (https://github.com/IBM/plex)
+
+Obtenidas del paquete npm @fontsource (subconjunto latino, que incluye tildes, ñ y signos del español).

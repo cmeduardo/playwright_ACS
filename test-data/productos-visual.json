@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "Café de Antigua 500g", "description": "Café de altura molido, tostado medio.", "price": 75, "category": "Alimentos", "stock": 100, "emoji": "☕" },
+  { "id": 2, "name": "Teclado Mecánico", "description": "Teclado mecánico retroiluminado, switches rojos.", "price": 450, "category": "Tecnología", "stock": 100, "emoji": "⌨️" },
+  { "id": 5, "name": "Cuaderno Universitario", "description": "Cuaderno de 200 hojas, cuadriculado.", "price": 25, "category": "Papelería", "stock": 100, "emoji": "📓" },
+  { "id": 7, "name": "Mochila Ñandú", "description": "Mochila resistente al agua para laptop de 15\".", "price": 260, "category": "Accesorios", "stock": 100, "emoji": "🎒" }
+]

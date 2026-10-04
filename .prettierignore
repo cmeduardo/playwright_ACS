@@ -1,0 +1,8 @@
+node_modules
+playwright-report
+allure-results
+allure-report
+test-results
+reports
+app/public
+*.sql
